@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Edycja książki</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<h2>Tytuł: {{ book.title }}</h2>
+<p>Autorzy: {{ book.authors | map(attribute='name') | join(', ') }}</p>
+<p>Opis: {{ book.description }}</p>
+<p>Status: {{ "Na półce" if book.on_shelf else "Wypożyczona" }}</p>
+
+<h3>Edytuj książkę</h3>
+<form method="post">
+{{ form.hidden_tag() }}
+<p>{{ form.title.label }}<br>{{ form.title() }}</p>
+<p>{{ form.authors.label }}<br>{{ form.authors() }}</p>
+<p>{{ form.description.label }}<br>{{ form.description() }}</p>
+<p>{{ form.on_shelf() }} {{ form.on_shelf.label }}</p>
+<p>{{ form.submit() }}</p>
+</form>
+
+<h3>Wypożycz książkę</h3>
+{% if book.on_shelf %}
+<form method="post">
+{{ loan_form.hidden_tag() }}
+<p>{{ loan_form.borrower.label }}<br>{{ loan_form.borrower() }}</p>
+<p>{{ loan_form.submit() }}</p>
+</form>
+{% else %}
+<p>Obecnie wypożyczona:</p>
+<ul>
+{% for loan in book.loans %}
+    {% if not loan.is_returned %}
+    <li>{{ loan.borrower }} (wypożyczono: {{ loan.loan_date.strftime('%Y-%m-%d') }})
+        <form method="post" action="{{ url_for('return_loan', loan_id=loan.id) }}">
+            <button type="submit">Oznacz zwrot</button>
+        </form>
+    </li>
+    {% endif %}
+{% endfor %}
+</ul>
+{% endif %}
+</body>
+</html>

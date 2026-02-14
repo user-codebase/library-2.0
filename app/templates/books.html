@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Library</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<h2>Lista książek</h2>
+<table>
+<tr>
+<th>Tytuł</th><th>Autorzy</th><th>Opis</th><th>Status</th><th>Usuń</th>
+</tr>
+{% for book in books %}
+<tr>
+<td><a href="{{ url_for('book_details', book_id=book.id) }}">{{ book.title }}</a></td>
+<td>{{ book.authors | map(attribute='name') | join(', ') }}</td>
+<td>{{ book.description }}</td>
+<td>{{ "Na półce" if book.on_shelf else "Wypożyczona" }}</td>
+<td>
+<form action="{{ url_for('delete_book', book_id=book.id) }}" method="post" class="delete-form">
+<button type="submit">Usuń</button>
+</form>
+</td>
+</tr>
+{% endfor %}
+</table>
+
+<h3>Dodaj nową książkę</h3>
+<form method="post">
+{{ form.hidden_tag() }}
+<p>{{ form.title.label }}<br>{{ form.title() }}</p>
+<p>{{ form.authors.label }}<br>{{ form.authors() }}</p>
+<p>{{ form.description.label }}<br>{{ form.description() }}</p>
+<p>{{ form.on_shelf() }} {{ form.on_shelf.label }}</p>
+<p>{{ form.submit() }}</p>
+</form>
+</body>
+</html>
