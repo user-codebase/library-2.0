@@ -3,38 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Library</title>
+    <title>Document</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-<h2>Lista książek</h2>
-<table>
-<tr>
-<th>Tytuł</th><th>Autorzy</th><th>Opis</th><th>Status</th><th>Usuń</th>
-</tr>
-{% for book in books %}
-<tr>
-<td><a href="{{ url_for('book_details', book_id=book.id) }}">{{ book.title }}</a></td>
-<td>{{ book.authors | map(attribute='name') | join(', ') }}</td>
-<td>{{ book.description }}</td>
-<td>{{ "Na półce" if book.on_shelf else "Wypożyczona" }}</td>
-<td>
-<form action="{{ url_for('delete_book', book_id=book.id) }}" method="post" class="delete-form">
-<button type="submit">Usuń</button>
-</form>
-</td>
-</tr>
-{% endfor %}
-</table>
+    <h1>Biblioteka</h1>
+    <form method="get">
+    <label>Filtruj po autorze:</label>
+    <select name="author_id">
+        <option value="">wszyscy autorzy</option>
+        {% for author in authors %}
+            <option value="{{ author.id }}" {% if selected_author == author.id %} selected {% endif %}>
+                {{ author.name }}
+            </option>
+        {% endfor %}
+    </select>
+    <button type="submit">Filtruj</button>
+    </form>
 
-<h3>Dodaj nową książkę</h3>
-<form method="post">
-{{ form.hidden_tag() }}
-<p>{{ form.title.label }}<br>{{ form.title() }}</p>
-<p>{{ form.authors.label }}<br>{{ form.authors() }}</p>
-<p>{{ form.description.label }}<br>{{ form.description() }}</p>
-<p>{{ form.on_shelf() }} {{ form.on_shelf.label }}</p>
-<p>{{ form.submit() }}</p>
-</form>
+    <p><a href="{{ url_for('add_book') }}">Dodaj nową książkę</a></p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Tytuł</th>
+                <th>Autorzy</th>
+                <th>Opis</th>
+                <th>Na półce?</th>
+                <th>Opcje</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for book in books %}
+            <tr>
+                <td>{{ book.title }}</td>
+                <td>
+                    {% for author in book.authors %}
+                        {{ author.name }}{% if not loop.last %}, {% endif %}
+                    {% endfor %}
+                </td>
+                <td>{{ book.description }}</td>
+                <td>{{ "TAK" if book.on_shelf else "NIE" }}</td>
+                <td>
+                    <a href="{{ url_for('book_details', book_id=book.id) }}">Szczegóły</a>
+                    <form action="{{ url_for('delete_book', book_id=book.id) }}" method="post" class="delete-form">
+                        <button type="submit">Usuń</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </body>
 </html>

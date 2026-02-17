@@ -53,11 +53,16 @@ def api_book_detail(book_id):
 
         if "authors" in data:
             book.authors.clear()
-            for name in data["authors"].split(","):
+            for name in data["authors"]:
                 name = name.strip()
+
+                if not name:
+                    continue
+
                 author = Author.query.filter_by(name=name).first()
                 if not author:
                     author = Author(name=name)
+                    db.session.add(author)
                 book.authors.append(author)
 
         db.session.commit()
@@ -70,3 +75,15 @@ def api_book_detail(book_id):
         db.session.delete(book)
         db.session.commit()
         return jsonify({"result": True})
+
+
+@app.route("/api/v1/authors/", methods=["GET"])
+def api_authors():
+    authors = Author.query.all()
+    return jsonify([
+        {
+            "id": a.id,
+            "name": a.name,
+            "books": [{"id": b.id, "title": b.title} for b in a.books]
+        } for a in authors
+    ])

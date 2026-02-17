@@ -9,7 +9,7 @@ h2, h3 {
     color: #2c3e50;
 }
 
-/* Tabela książek */
+
 table {
     width: 100%;
     border-collapse: collapse;
@@ -42,7 +42,7 @@ table a:hover {
     text-decoration: underline;
 }
 
-/* Linki */
+
 a {
     color: #3498db;
     text-decoration: none;
@@ -53,7 +53,7 @@ a:hover {
     text-decoration: underline;
 }
 
-/* Formularze */
+
 form {
     background-color: #fff;
     padding: 20px;
@@ -95,8 +95,10 @@ form input[type="submit"]:active,
 form button:active {
     transform: scale(0.97);
 }
+.book-form {
+    display: inline;
+}
 
-/* Przyciski usuwania */
 .delete-form {
     display: inline-block;
     margin: 0;

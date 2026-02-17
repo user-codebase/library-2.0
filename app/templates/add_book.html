@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>Dodaj nową książkę</h1>
+    <form method="post">
+    {{ form.hidden_tag() }}
+    <p>{{ form.title.label }}<br>{{ form.title(size=50) }}</p>
+    <p>{{ form.authors.label }}<br>{{ form.authors(size=50) }}</p>
+    <p>{{ form.description.label }}<br>{{ form.description(rows=4, cols=50) }}</p>
+    <p>{{ form.on_shelf() }} {{ form.on_shelf.label }}</p>
+    <p>{{ form.submit() }}</p>
+    </form>
+    <p><a href="{{ url_for('books_list') }}">Powrót do listy książek</a></p>
+</body>
+</html>
